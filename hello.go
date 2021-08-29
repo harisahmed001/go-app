@@ -14,6 +14,6 @@ func main() {
 }
 
 func DoHealthCheck(w http.ResponseWriter, r *http.Request) {
-   fmt.Fprintf(w, "Hello world!")
+   fmt.Fprintf(w, "Hello world v1!")
    w.WriteHeader(http.StatusAccepted) //RETURN HTTP CODE 202
 }
