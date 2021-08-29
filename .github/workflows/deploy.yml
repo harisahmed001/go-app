@@ -25,19 +25,57 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: docker login
-        env:
-          DOCKER_USER: ${{secrets.DOCKER_USER}}
-          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
-        run: |
-          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD 
+      # - name: docker login
+      #   env:
+      #     DOCKER_USER: ${{secrets.DOCKER_USER}}
+      #     DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      #   run: |
+      #     docker login -u $DOCKER_USER -p $DOCKER_PASSWORD 
 
-      - name: Build the Docker image
-        env:
-          DOCKER_USER: ${{secrets.DOCKER_USER}}
-        run: docker build . --file Dockerfile --tag $DOCKER_USER/golang-automation:latest
+      # - name: Build the Docker image
+      #   env:
+      #     DOCKER_USER: ${{secrets.DOCKER_USER}}
+      #   run: docker build . --file Dockerfile --tag $DOCKER_USER/golang-automation:latest
         
-      - name: Docker Push
+      # - name: Docker Push
+      #   env:
+      #       DOCKER_USER: ${{secrets.DOCKER_USER}}
+      #   run: docker push $DOCKER_USER/golang-automation:latest
+
+      - name: test
         env:
-            DOCKER_USER: ${{secrets.DOCKER_USER}}
-        run: docker push $DOCKER_USER/golang-automation:latest
+          AWS_KEY: ${{secrets.AWS_KEY}}
+          AWS_SECRET: ${{secrets.AWS_SECRET}}
+          AWS_REGION: ${{secrets.AWS_REGION}}
+        run: aws configure set aws_access_key_id "$AWS_KEY" && aws configure set aws_secret_access_key "$AWS_SECRET" && aws configure set region "$AWS_REGION" 
+
+      - name: test
+        run: aws s3 ls
+        
+
+  # deploy:
+  #   needs: build
+  #   # The type of runner that the job will run on
+  #   runs-on: ubuntu-latest
+
+  #   # Steps represent a sequence of tasks that will be executed as part of the job
+  #   steps:
+  #     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+  #     - uses: actions/checkout@v2
+
+  #     - name: docker login
+  #       env:
+  #         DOCKER_USER: ${{secrets.DOCKER_USER}}
+  #         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+  #       run: |
+  #         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD 
+
+  #     - name: Build the Docker image
+  #       env:
+  #         DOCKER_USER: ${{secrets.DOCKER_USER}}
+  #       run: docker build . --file Dockerfile --tag $DOCKER_USER/golang-automation:latest
+        
+  #     - name: Docker Push
+  #       env:
+  #           DOCKER_USER: ${{secrets.DOCKER_USER}}
+  #       run: docker push $DOCKER_USER/golang-automation:latest
